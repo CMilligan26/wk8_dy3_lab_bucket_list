@@ -7,24 +7,29 @@ const createRouter = function (collection) {
 
   router.get( '/', (req, res) => {
     collection
-      .find()
-      .toArray()
-      .then((docs) => res.json(docs));
-  } );
+    .find()
+    .toArray()
+    .then((docs) => res.json(docs))
+    .catch((err) => {
+      console.error(err);
+      res.status(500);
+      res.json({ status: 500, error: err });
+    });
+  });
 
   router.get( '/:id', (req, res) => {
     const id = req.params.id;
     collection
-      .findOne({ _id: ObjectId(id) })
-      .then((doc) => res.json(doc));
+    .findOne({ _id: ObjectId(id) })
+    .then((doc) => res.json(doc));
   });
 
   router.post( '/', (req, res) => {
     const newData = req.body;
     collection
-      .insertOne(newData)
-      .then( () => collection.find().toArray())
-      .then( (docs) => res.json(docs) );
+    .insertOne(newData)
+    .then( () => collection.find().toArray())
+    .then( (docs) => res.json(docs) );
   });
 
   router.delete('/:id', (req, res) => {
